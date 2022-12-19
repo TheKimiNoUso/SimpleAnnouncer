@@ -1,0 +1,4 @@
+timer: 1 # In minutes
+
+messages:
+  one: "Test test test"

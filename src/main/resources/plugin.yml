@@ -1,0 +1,15 @@
+name: Announcer
+version: '${project.version}'
+main: me.kiminouso.announcer.Announcer
+api-version: 1.13
+prefix: Announcer
+authors: [ KimiNoUso ]
+description: A simple automatic announcement plugin
+
+commands:
+  reloadannouncer:
+    permission: announcer.reload
+
+permissions:
+  announcer.reload:
+    default: op
