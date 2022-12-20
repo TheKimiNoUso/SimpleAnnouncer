@@ -24,9 +24,6 @@ commands:
 permissions:
   announcer.reload:
     default: op
-  announcer.bypass:
-    default: false
-    description: Bypass all announcements
   announcer.addmessage:
     default: op
   announcer.removemessage:
