@@ -1,27 +1,32 @@
 package me.kiminouso.simpleannouncer;
 
+import lombok.Getter;
+import lombok.Setter;
 import me.kiminouso.simpleannouncer.commands.AddMessageCommand;
 import me.kiminouso.simpleannouncer.commands.ListMessagesCommand;
 import me.kiminouso.simpleannouncer.commands.ReloadMessagesCommand;
 import me.kiminouso.simpleannouncer.commands.RemoveMessageCommand;
-import me.tippie.tippieutils.functions.ColorUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Random;
+import java.util.logging.Level;
 
 public final class SimpleAnnouncer extends JavaPlugin {
-
+    @Getter
+    @Setter
     private final List<String> messages = new ArrayList<>();
-    private String previousMessage = "";
+    @Getter
+    private final Random random = new Random();
+    private final AnnouncementTask announcementTask = new AnnouncementTask();
 
     @Override
     public void onEnable() {
-        Random rnd = new Random();
         Metrics metrics = new Metrics(this, 17120);
+        getServer().getScheduler().runTaskLater(this, announcementTask::start, 90L);
 
         //region Commands
         Bukkit.getPluginCommand("reloadannouncer").setExecutor(new ReloadMessagesCommand());
@@ -35,35 +40,36 @@ public final class SimpleAnnouncer extends JavaPlugin {
         messages.clear();
         messages.addAll(getConfig().getStringList("messages"));
         Collections.shuffle(messages);
+
+        if (getConfig().getStringList("messages").size() == 0)
+            getServer().getLogger().log(Level.SEVERE, "You don't have any messages registered in your config.yml!");
+
+        try {
+            announcementTask.setCooldown(getConfig().getInt("timer"));
+        } catch (NumberFormatException e) {
+            announcementTask.setCooldown(1);
+            getServer().getLogger().log(Level.SEVERE, "Setting timer to 1 minute by default due to an error in your config.yml. Please check your 'timer:' path.");
+            e.printStackTrace();
+        }
+
+        if (!announcementTask.isActive())
+            announcementTask.start();
         //endregion Load
-
-        //region Task
-        getServer().getScheduler().runTaskLater(this, () -> {
-            getServer().getScheduler().runTaskTimer(this, () -> {
-                String msg = messages.get(rnd.nextInt(messages.size()));
-
-                if (messages.size() > 1) {
-                    while (previousMessage.equals(msg)) {
-                        msg = messages.get(rnd.nextInt(messages.size()));
-                    }
-                }
-
-                Bukkit.broadcastMessage(Stream.of(ColorUtils.translateColorCodes('&', msg)).map(component -> component.toLegacyText()).collect(Collectors.joining()));
-                previousMessage = msg;
-            }, 1L, getConfig().getInt("timer") * 1200L);
-        }, 3 * 20L);
-        //endregion Task
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        if (announcementTask.isActive())
+            announcementTask.end();
     }
 
     public void reload() {
+        if (announcementTask.isActive())
+            announcementTask.end();
         reloadConfig();
         messages.clear();
         messages.addAll(getConfig().getStringList("messages"));
+        getServer().getScheduler().runTaskLater(this, announcementTask::start, 20L);
     }
 
     public void addMessage(String newMessage) {

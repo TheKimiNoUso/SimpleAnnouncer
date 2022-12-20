@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 public class RemoveMessageCommand extends TippieCommand {
     @Override
     public void executes(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) throws NoSuchMethodException {
-        int index = 0;
+        int index;
 
         try {
             index = Integer.parseInt(args[0]);
