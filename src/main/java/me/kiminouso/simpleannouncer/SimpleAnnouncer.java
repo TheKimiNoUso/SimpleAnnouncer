@@ -21,6 +21,7 @@ public final class SimpleAnnouncer extends JavaPlugin {
     @Override
     public void onEnable() {
         Random rnd = new Random();
+        Metrics metrics = new Metrics(this, 17120);
 
         //region Commands
         Bukkit.getPluginCommand("reloadannouncer").setExecutor(new ReloadMessagesCommand());
