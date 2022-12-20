@@ -1,15 +1,27 @@
-name: Announcer
+name: SimpleAnnouncer
 version: '${project.version}'
-main: me.kiminouso.announcer.Announcer
-api-version: 1.13
-prefix: Announcer
+main: me.kiminouso.simpleannouncer.SimpleAnnouncer
+api-version: 1.17
+prefix: SimpleAnnouncer
 authors: [ KimiNoUso ]
 description: A simple automatic announcement plugin
 
 commands:
   reloadannouncer:
     permission: announcer.reload
+  addmessage:
+    permission: announcer.addmessage
+  listmessages:
+    permisson: announcer.listmessages
+  removemessage:
+    permission: announcer.removemessage
 
 permissions:
   announcer.reload:
+    default: op
+  announcer.addmessage:
+    default: op
+  announcer.removemessage:
+    default: op
+  announcer.listmessages:
     default: op

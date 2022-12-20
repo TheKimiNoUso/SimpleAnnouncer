@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.kiminouso</groupId>
-    <artifactId>Announcer</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>SimpleAnnouncer</artifactId>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>Announcer</name>
+    <name>SimpleAnnouncer</name>
 
     <description>A simple automatic announcement plugin</description>
     <properties>
@@ -43,7 +43,7 @@
                             <relocations>
                                 <relocation>
                                     <pattern>me.tippie.tippieutils</pattern>
-                                    <shadedPattern>me.kiminouso.announcer.libs.tippieutils</shadedPattern>
+                                    <shadedPattern>me.kiminouso.simpleannouncer.libs.tippieutils</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.13-R0.1-SNAPSHOT</version>
+            <version>1.17-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

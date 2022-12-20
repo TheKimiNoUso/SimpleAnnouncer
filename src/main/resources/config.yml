@@ -1,4 +1,7 @@
 timer: 1 # In minutes
 
 messages:
-  - "&cTest"
+  - "&cTest 1"
+  - "&aTest 2"
+  - "&6Test 3"
+  - "&4Test 4"
