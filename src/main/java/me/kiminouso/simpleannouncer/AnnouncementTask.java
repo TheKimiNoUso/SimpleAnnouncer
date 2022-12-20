@@ -7,6 +7,7 @@ import me.tippie.tippieutils.functions.ColorUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
@@ -24,6 +25,7 @@ public class AnnouncementTask {
         if (size == 0) {
             Bukkit.getServer().getLogger().log(Level.INFO, "Attempting to re-cycle your announcements.");
             SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getMessages().addAll(SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getConfig().getStringList("messages"));
+            Collections.shuffle(SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getMessages());
         }
 
         Random rnd = new Random();
