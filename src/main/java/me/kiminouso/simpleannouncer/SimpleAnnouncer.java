@@ -1,7 +1,6 @@
 package me.kiminouso.simpleannouncer;
 
 import lombok.Getter;
-import lombok.Setter;
 import me.kiminouso.simpleannouncer.commands.AddMessageCommand;
 import me.kiminouso.simpleannouncer.commands.ListMessagesCommand;
 import me.kiminouso.simpleannouncer.commands.ReloadMessagesCommand;
@@ -17,14 +16,13 @@ import java.util.logging.Level;
 
 public final class SimpleAnnouncer extends JavaPlugin {
     @Getter
-    @Setter
     private final List<String> messages = new ArrayList<>();
-    @Getter
-    private final Random random = new Random();
     private final AnnouncementTask announcementTask = new AnnouncementTask();
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
+
         Metrics metrics = new Metrics(this, 17120);
         getServer().getScheduler().runTaskLater(this, announcementTask::start, 90L);
 
@@ -36,7 +34,9 @@ public final class SimpleAnnouncer extends JavaPlugin {
         //endregion Commands
 
         //region Load
-        saveDefaultConfig();
+        if (Bukkit.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null)
+            getServer().getLogger().log(Level.INFO, "Found PlaceholderAPI soft dependency! Any placeholders will be set in announcements.");
+
         messages.clear();
         messages.addAll(getConfig().getStringList("messages"));
         Collections.shuffle(messages);

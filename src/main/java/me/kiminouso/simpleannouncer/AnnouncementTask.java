@@ -2,6 +2,7 @@ package me.kiminouso.simpleannouncer;
 
 import lombok.Getter;
 import lombok.Setter;
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.tippie.tippieutils.functions.ColorUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
@@ -17,7 +18,7 @@ import java.util.stream.Stream;
 public class AnnouncementTask {
     private int cooldown;
 
-    private final Runnable task = () -> Bukkit.getServer().getScheduler().runTaskTimer(SimpleAnnouncer.getPlugin(SimpleAnnouncer.class), () -> {
+    private final Runnable task = () -> {
         int size = SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getMessages().size();
 
         if (size == 0) {
@@ -25,12 +26,23 @@ public class AnnouncementTask {
             SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getMessages().addAll(SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getConfig().getStringList("messages"));
         }
 
-        Random rnd = SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getRandom();
+        Random rnd = new Random();
         String msg = SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getMessages().get(rnd.nextInt(size));
 
-        Bukkit.broadcastMessage(Stream.of(ColorUtils.translateColorCodes('&', msg)).map(component -> component.toLegacyText()).collect(Collectors.joining()));
+        Bukkit.getOnlinePlayers().forEach(player -> {
+            if (player.hasPermission("announcer.bypass"))
+                return;
+
+            String finalMsg = msg;
+
+            if (Bukkit.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null)
+                finalMsg = PlaceholderAPI.setPlaceholders(player, msg);
+
+            player.sendMessage(Stream.of(ColorUtils.translateColorCodes('&', finalMsg)).map(component -> component.toLegacyText()).collect(Collectors.joining()));
+        });
+
         SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getMessages().remove(msg);
-    }, 1L, cooldown * 1200L);
+    };
 
     private BukkitTask activeTask = null;
 
@@ -38,7 +50,7 @@ public class AnnouncementTask {
         if (activeTask != null)
             activeTask.cancel();
 
-        activeTask = Bukkit.getScheduler().runTaskTimer(SimpleAnnouncer.getPlugin(SimpleAnnouncer.class), task, 0, 20L);
+        activeTask = Bukkit.getScheduler().runTaskTimer(SimpleAnnouncer.getPlugin(SimpleAnnouncer.class), task, 1L, cooldown * 1200L);
     }
 
     public void end() {

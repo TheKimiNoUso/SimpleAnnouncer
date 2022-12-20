@@ -3,22 +3,30 @@ version: '${project.version}'
 main: me.kiminouso.simpleannouncer.SimpleAnnouncer
 api-version: 1.17
 prefix: SimpleAnnouncer
+softdepend: [ PlaceholderAPI ]
 authors: [ KimiNoUso ]
 description: A simple automatic announcement plugin
 
 commands:
   reloadannouncer:
     permission: announcer.reload
+    description: Reloads your config
   addmessage:
     permission: announcer.addmessage
+    description: Adds a message to your messages path in config.yml
   listmessages:
     permisson: announcer.listmessages
+    description: Lists all registered messages
   removemessage:
     permission: announcer.removemessage
+    description: Remove a message to your messages path in config.yml
 
 permissions:
   announcer.reload:
     default: op
+  announcer.bypass:
+    default: false
+    description: Bypass all announcements
   announcer.addmessage:
     default: op
   announcer.removemessage:
