@@ -9,6 +9,10 @@ import org.jetbrains.annotations.NotNull;
 public class RemoveMessageCommand extends TippieCommand {
     @Override
     public void executes(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) throws NoSuchMethodException {
+        if (args.length < 1) {
+            sender.sendMessage("§cUsage: /removemessage <#>. To list all messages, do /listmessages");
+        }
+
         int index;
 
         try {
