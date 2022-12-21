@@ -13,6 +13,7 @@ public class AddMessageCommand extends TippieCommand {
     public void executes(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) throws NoSuchMethodException {
         if (args.length < 1) {
             sender.sendMessage("§cUsage: /addmessage <message>.");
+            return;
         }
 
         SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).addMessage(String.join(" ", Arrays.copyOfRange(args, 0, args.length)));

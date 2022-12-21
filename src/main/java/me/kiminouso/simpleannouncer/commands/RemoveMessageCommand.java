@@ -11,6 +11,12 @@ public class RemoveMessageCommand extends TippieCommand {
     public void executes(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) throws NoSuchMethodException {
         if (args.length < 1) {
             sender.sendMessage("§cUsage: /removemessage <#>. To list all messages, do /listmessages");
+            return;
+        }
+
+        if (SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getMessages().size() == 0) {
+            sender.sendMessage("§cThere are no registered announcements! Add some using /addmessage, or by using config.yml");
+            return;
         }
 
         int index;
