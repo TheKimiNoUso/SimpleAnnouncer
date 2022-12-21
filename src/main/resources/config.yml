@@ -1,5 +1,7 @@
-# Thank you for downloading SimpleAnnouncer! If you like my plugin, please leave a review.
+# Thank you for downloading SimpleAnnouncer by KimiNoUso! If you like my plugin, please leave a review.
 # Spigot: https://www.spigotmc.org/resources/simpleannouncer.106836/
+#
+# ALL THE FEATURES LISTED BELOW ARE OPTIONAL AND DON'T AFFECT PERFORMANCE
 #
 # All types of standard colour codes are supported, including Hexadecimal, e.g. &#FFFFFF, or &c
 # Non-Hex colour codes: http://ess.khhq.net/mc/
@@ -7,15 +9,15 @@
 # PlaceholderAPI placeholders are supported if your server has PlaceholderAPI installed.
 # e.g. - "&cHello there, %player_name%. If you need help, use /helpop"
 #
-# Hover-able text is also supported! Simply surround what you wish to make appear in {}. Use \n for new lines.
-# e.g. - "&cHello there, %player_name%. {&7This is a multi-line\n&7message!}"
+# Hover-able text is also supported! Simply surround what you wish to make appear in {}. Use | for new lines.
+# e.g. - "&cHover over me!. {&7This is a multi-line|&7message!|&cThis is so cool!}"
 
 # This is how long the plugin will wait before sending another announcement in minutes.
 timer: 1
 
 # These are selected at random and queued.
 messages:
-  - "&cTest 1"
-  - "&aTest 2"
-  - "&6Test 3"
-  - "&4Test 4"
+  - "&2Example message 1 - Want an announcement you can hover? Supported! Hover me to check it out {This is an example!|&oPretty cool, huh?}"
+  - "&aExample message 2 - Want to use &#43ba89Hexadecimal colours?&a That's also supported!"
+  - "&6Example message 3 - Want to use PlaceholderAPI (eg. %player_name%)? We've got you covered. If you don't, that's no problem either."
+  - "Example message 4 - This is a standard message with no bells or whistles! As simple as it gets."

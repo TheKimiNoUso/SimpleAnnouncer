@@ -26,15 +26,13 @@ public class AnnouncementTask {
         int size = SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getMessages().size();
 
         // Re-cycle messages into the queue if the queue is empty
-        if (size == 0) {
-            Bukkit.getServer().getLogger().log(Level.INFO, "Attempting to re-cycle your announcements.");
-            SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getMessages().addAll(SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getConfig().getStringList("messages"));
-            Collections.shuffle(SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getMessages());
-        }
+        if (size == 0)
+            SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).loadAnnouncements(
+                    SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getConfig().getStringList("messages"));
 
         // Choose a random message from the queue
         Random rnd = new Random();
-        String msg = SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getMessages().get(rnd.nextInt(size));
+        TextComponent msg = SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getMessages().get(rnd.nextInt(size));
 
         // Iterate over all players in order to send the announcement to them
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -42,52 +40,17 @@ public class AnnouncementTask {
             if (player.hasPermission("announcer.bypass"))
                 return;
 
-            String finalMsg = msg;
+            String text = msg.getText();
 
             // Set PlaceholderAPI placeholders if plugin exists
             if (Bukkit.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null)
-                finalMsg = PlaceholderAPI.setPlaceholders(player, msg);
+                text = PlaceholderAPI.setPlaceholders(player, text);
 
-            // Turn message into a Text Component
-            String hoverMessage;
-            TextComponent message = new TextComponent(Stream.of(ColorUtils.translateColorCodes('&', finalMsg)).map(component -> component.toLegacyText()).collect(Collectors.joining()));
+            msg.setText(Stream.of(ColorUtils.translateColorCodes('&', text))
+                    .map(component -> component.toLegacyText())
+                    .collect(Collectors.joining()));
 
-            // Handle hover-able messages
-            if (finalMsg.contains("{") && finalMsg.contains("}")) {
-                hoverMessage = StringUtils.substringBetween(finalMsg, "{", "}");
-
-                if (hoverMessage.contains("|")) {
-                    StringBuilder builder = new StringBuilder();
-                    String[] messages = hoverMessage.split("\\|");
-
-                    int i = 0;
-
-                    for (String s : messages) {
-                        String localMsg = s;
-                        localMsg = localMsg.replace("}", "");
-                        localMsg = localMsg.replace("{", "");
-                        builder.append(Stream.of(ColorUtils.translateColorCodes('&', localMsg))
-                                .map(component -> component.toLegacyText())
-                                .collect(Collectors.joining())
-                        );
-
-                        if (i++ != messages.length - 1) {
-                            builder.append("\n");
-                        }
-                    }
-
-                    hoverMessage = builder.toString();
-                }
-
-                message = new TextComponent(Stream.of(ColorUtils.translateColorCodes('&', finalMsg.replace("{" + StringUtils.substringBetween(finalMsg, "{", "}") + "}", "")))
-                        .map(component -> component.toLegacyText())
-                        .collect(Collectors.joining())
-                );
-                message.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(hoverMessage)));
-            }
-
-            // Send announcement message
-            player.spigot().sendMessage(message);
+            player.spigot().sendMessage(msg);
         }
 
         // Remove message from the queue

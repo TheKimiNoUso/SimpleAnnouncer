@@ -5,6 +5,11 @@ import me.kiminouso.simpleannouncer.commands.AddMessageCommand;
 import me.kiminouso.simpleannouncer.commands.ListMessagesCommand;
 import me.kiminouso.simpleannouncer.commands.ReloadMessagesCommand;
 import me.kiminouso.simpleannouncer.commands.RemoveMessageCommand;
+import me.tippie.tippieutils.functions.ColorUtils;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -13,10 +18,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class SimpleAnnouncer extends JavaPlugin {
     @Getter
-    private final List<String> messages = new ArrayList<>();
+    private final List<TextComponent> messages = new ArrayList<>();
     private final AnnouncementTask announcementTask = new AnnouncementTask();
 
     @Override
@@ -37,9 +44,7 @@ public final class SimpleAnnouncer extends JavaPlugin {
         if (Bukkit.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null)
             getServer().getLogger().log(Level.INFO, "Found PlaceholderAPI soft dependency! Any placeholders will be set in announcements.");
 
-        messages.clear();
-        messages.addAll(getConfig().getStringList("messages"));
-        Collections.shuffle(messages);
+        loadAnnouncements(getConfig().getStringList("messages"));
 
         if (getConfig().getStringList("messages").size() == 0)
             getServer().getLogger().log(Level.SEVERE, "You don't have any messages registered in your config.yml!");
@@ -63,12 +68,60 @@ public final class SimpleAnnouncer extends JavaPlugin {
             announcementTask.end();
     }
 
+    /**
+     * This function will load all the announcements in the messages path in
+     * config.yml to a TextComponent and store them in a list. This stores raw
+     * text without any kind of colouring or placeholder replacements.
+     */
+    public void loadAnnouncements(List<String> announcements) {
+        messages.clear();
+
+        for (String string : announcements) {
+            // Turns announcement into Text Component
+            String hoverMessage;
+            TextComponent msg = new TextComponent(string);
+
+            // Handle hover-able messages
+            if (string.contains("{") && string.contains("}")) {
+                hoverMessage = StringUtils.substringBetween(string, "{", "}");
+
+                if (hoverMessage.contains("|")) {
+                    StringBuilder builder = new StringBuilder();
+                    String[] messages = hoverMessage.split("\\|");
+
+                    int i = 0;
+
+                    for (String s : messages) {
+                        String localMsg = s;
+                        localMsg = localMsg.replace("}", "");
+                        localMsg = localMsg.replace("{", "");
+                        builder.append(Stream.of(ColorUtils.translateColorCodes('&', localMsg))
+                                .map(component -> component.toLegacyText())
+                                .collect(Collectors.joining())
+                        );
+
+                        if (i++ != messages.length - 1) {
+                            builder.append("\n");
+                        }
+                    }
+
+                    hoverMessage = builder.toString();
+                }
+
+                msg = new TextComponent(string.replace("{" + StringUtils.substringBetween(string, "{", "}") + "}", ""));
+                msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(hoverMessage)));
+            }
+            messages.add(msg);
+        }
+
+        Collections.shuffle(messages);
+    }
+
     public void reload() {
         if (announcementTask.isActive())
             announcementTask.end();
         reloadConfig();
-        messages.clear();
-        messages.addAll(getConfig().getStringList("messages"));
+        loadAnnouncements(getConfig().getStringList("messages"));
         getServer().getScheduler().runTaskLater(this, announcementTask::start, 20L);
     }
 
