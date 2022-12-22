@@ -20,6 +20,9 @@ commands:
   removemessage:
     permission: announcer.removemessage
     description: Remove a message to your messages path in config.yml
+  announce:
+    permission: announcer.announce
+    description: Permission to send a broadcast using SimpleAnnouncer
 
 permissions:
   announcer.reload:
@@ -29,4 +32,6 @@ permissions:
   announcer.removemessage:
     default: op
   announcer.listmessages:
+    default: op
+  announcer.announce:
     default: op

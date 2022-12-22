@@ -1,10 +1,7 @@
 package me.kiminouso.simpleannouncer;
 
 import lombok.Getter;
-import me.kiminouso.simpleannouncer.commands.AddMessageCommand;
-import me.kiminouso.simpleannouncer.commands.ListMessagesCommand;
-import me.kiminouso.simpleannouncer.commands.ReloadMessagesCommand;
-import me.kiminouso.simpleannouncer.commands.RemoveMessageCommand;
+import me.kiminouso.simpleannouncer.commands.*;
 import me.tippie.tippieutils.functions.ColorUtils;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -34,6 +31,7 @@ public final class SimpleAnnouncer extends JavaPlugin {
         getServer().getScheduler().runTaskLater(this, announcementTask::start, 90L);
 
         //region Commands
+        Bukkit.getPluginCommand("announce").setExecutor(new AnnounceCommand());
         Bukkit.getPluginCommand("reloadannouncer").setExecutor(new ReloadMessagesCommand());
         Bukkit.getPluginCommand("addmessage").setExecutor(new AddMessageCommand());
         Bukkit.getPluginCommand("listmessages").setExecutor(new ListMessagesCommand());
@@ -79,42 +77,47 @@ public final class SimpleAnnouncer extends JavaPlugin {
         for (String string : announcements) {
             // Turns announcement into Text Component
             String hoverMessage;
+            string = Stream.of(ColorUtils.translateColorCodes('&', string))
+                    .map(component -> component.toLegacyText())
+                    .collect(Collectors.joining());
             TextComponent msg = new TextComponent(string);
 
             // Handle hover-able messages
             if (string.contains("{") && string.contains("}")) {
                 hoverMessage = StringUtils.substringBetween(string, "{", "}");
 
-                if (hoverMessage.contains("|")) {
-                    StringBuilder builder = new StringBuilder();
-                    String[] messages = hoverMessage.split("\\|");
-
-                    int i = 0;
-
-                    for (String s : messages) {
-                        String localMsg = s;
-                        localMsg = localMsg.replace("}", "");
-                        localMsg = localMsg.replace("{", "");
-                        builder.append(Stream.of(ColorUtils.translateColorCodes('&', localMsg))
-                                .map(component -> component.toLegacyText())
-                                .collect(Collectors.joining())
-                        );
-
-                        if (i++ != messages.length - 1) {
-                            builder.append("\n");
-                        }
-                    }
-
-                    hoverMessage = builder.toString();
-                }
-
-                msg = new TextComponent(string.replace("{" + StringUtils.substringBetween(string, "{", "}") + "}", ""));
-                msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(hoverMessage)));
+                msg.setText(string.replace("{" + StringUtils.substringBetween(string, "{", "}") + "}", ""));
+                msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(Stream.of(ColorUtils.translateColorCodes('&', translateHoverMessage(hoverMessage)))
+                        .map(component -> component.toLegacyText())
+                        .collect(Collectors.joining()))));
             }
             messages.add(msg);
         }
 
         Collections.shuffle(messages);
+    }
+
+    public String translateHoverMessage(String string) {
+        StringBuilder builder = new StringBuilder();
+        String[] messages = string.split("\\|");
+
+        int i = 0;
+
+        for (String s : messages) {
+            String localMsg = s;
+            localMsg = localMsg.replace("}", "");
+            localMsg = localMsg.replace("{", "");
+            builder.append(Stream.of(ColorUtils.translateColorCodes('&', localMsg))
+                    .map(component -> component.toLegacyText())
+                    .collect(Collectors.joining())
+            );
+
+            if (i++ != messages.length - 1) {
+                builder.append("\n");
+            }
+        }
+
+        return builder.toString();
     }
 
     public void reload() {
