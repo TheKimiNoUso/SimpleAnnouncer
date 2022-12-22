@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 public final class SimpleAnnouncer extends JavaPlugin {
     @Getter
     private final List<TextComponent> messages = new ArrayList<>();
+    @Getter
     private final AnnouncementTask announcementTask = new AnnouncementTask();
 
     @Override
@@ -30,13 +31,7 @@ public final class SimpleAnnouncer extends JavaPlugin {
         Metrics metrics = new Metrics(this, 17120);
         getServer().getScheduler().runTaskLater(this, announcementTask::start, 90L);
 
-        //region Commands
-        Bukkit.getPluginCommand("announce").setExecutor(new AnnounceCommand());
-        Bukkit.getPluginCommand("reloadannouncer").setExecutor(new ReloadMessagesCommand());
-        Bukkit.getPluginCommand("addmessage").setExecutor(new AddMessageCommand());
-        Bukkit.getPluginCommand("listmessages").setExecutor(new ListMessagesCommand());
-        Bukkit.getPluginCommand("removemessage").setExecutor(new RemoveMessageCommand());
-        //endregion Commands
+        Bukkit.getPluginCommand("simpleannouncer").setExecutor(new AnnouncerBaseCommand());
 
         //region Load
         if (Bukkit.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null)
@@ -55,8 +50,10 @@ public final class SimpleAnnouncer extends JavaPlugin {
             e.printStackTrace();
         }
 
-        if (!announcementTask.isActive())
-            announcementTask.start();
+        if (getConfig().getBoolean("send-auto-announcements")) {
+            if (!announcementTask.isActive())
+                announcementTask.start();
+        }
         //endregion Load
     }
 
@@ -123,9 +120,12 @@ public final class SimpleAnnouncer extends JavaPlugin {
     public void reload() {
         if (announcementTask.isActive())
             announcementTask.end();
+
         reloadConfig();
         loadAnnouncements(getConfig().getStringList("messages"));
-        getServer().getScheduler().runTaskLater(this, announcementTask::start, 20L);
+
+        if (getConfig().getBoolean("send-auto-announcements"))
+            getServer().getScheduler().runTaskLater(this, announcementTask::start, 10L);
     }
 
     public void addMessage(String newMessage) {

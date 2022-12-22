@@ -8,30 +8,14 @@ authors: [ KimiNoUso ]
 description: A simple automatic announcement plugin
 
 commands:
-  reloadannouncer:
-    permission: announcer.reload
-    description: Reloads your config
-  addmessage:
-    permission: announcer.addmessage
-    description: Adds a message to your messages path in config.yml
-  listmessages:
-    permisson: announcer.listmessages
-    description: Lists all registered messages
-  removemessage:
-    permission: announcer.removemessage
-    description: Remove a message to your messages path in config.yml
-  announce:
-    permission: announcer.announce
-    description: Permission to send a broadcast using SimpleAnnouncer
+  simpleannouncer:
+    permission: announcer.use
+    description: Base command for SimpleAnnouncer commands
+    aliases:
+      - announcer
+      - announce
+      - simpleannounce
 
 permissions:
-  announcer.reload:
-    default: op
-  announcer.addmessage:
-    default: op
-  announcer.removemessage:
-    default: op
-  announcer.listmessages:
-    default: op
-  announcer.announce:
+  announcer.use:
     default: op

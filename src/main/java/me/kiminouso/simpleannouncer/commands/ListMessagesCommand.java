@@ -17,6 +17,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ListMessagesCommand extends TippieCommand {
+    public ListMessagesCommand() {
+        super.subLevel = 1;
+        super.name = "list";
+        super.description = "List all registered announcements";
+        super.permission = "announcer.listmessage";
+    }
+
     @Override
     public void executes(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) throws NoSuchMethodException {
         if (!(sender instanceof Player)) {

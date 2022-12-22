@@ -19,10 +19,17 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class AnnounceCommand extends TippieCommand {
+    public AnnounceCommand() {
+        super.subLevel = 1;
+        super.name = "announce";
+        super.description = "Manually announce a message! Supports PlaceholderAPI & Hovering";
+        super.permission = "announcer.announce";
+    }
+
     @Override
     public void executes(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) throws NoSuchMethodException {
         if (args.length < 1) {
-            sender.sendMessage("§cUsage: /announce <message>.");
+            sender.sendMessage("§8[§9SimpleAnnouncer§8] §cUsage: /announce <message>.");
             return;
         }
 
