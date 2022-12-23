@@ -17,8 +17,7 @@ public class RemoveMessageCommand extends TippieCommand {
 
     @Override
     public void executes(
-            @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
-            throws NoSuchMethodException {
+            @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length < 1) {
             sender.sendMessage(
                     "§8[§9SimpleAnnouncer§8] §cUsage: /removemessage <#>. To list all messages, do /listmessages");

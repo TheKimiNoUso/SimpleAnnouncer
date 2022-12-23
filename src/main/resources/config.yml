@@ -12,8 +12,8 @@
 # Hover-able text is also supported! Simply surround what you wish to make appear in {}. Use | for new lines.
 # e.g. - "&cHover over me!. {&7This is a multi-line|&7message!|&cThis is so cool!}"
 
-# DO NOT CHANGE THIS VALUE
-config-version: 2
+# CONFIG VERSION, DO NOT CHANGE
+version: 2
 
 # This is how long the plugin will wait before sending another announcement in minutes.
 timer: 1

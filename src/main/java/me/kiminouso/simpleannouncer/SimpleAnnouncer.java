@@ -58,12 +58,10 @@ public final class SimpleAnnouncer extends JavaPlugin {
             e.printStackTrace();
         }
 
-        if (getConfig().getBoolean("send-auto-announcements")) {
+        if (getConfig().getBoolean("send-auto-announcements", true)) {
             if (!announcementTask.isActive()) announcementTask.start();
         }
-
-        checkConfigForUpdates();
-        // endregion Loa
+        // endregion Load
     }
 
     @Override
@@ -150,22 +148,5 @@ public final class SimpleAnnouncer extends JavaPlugin {
         getConfig().set("messages", configList);
         saveConfig();
         getServer().getScheduler().runTaskLater(this, this::reload, 3 * 20L);
-    }
-
-    private void checkConfigForUpdates() {
-        // New config additions from older versions (v1.1.0+ only)
-        /*if (getConfig().getInt("config-version") < 3) {
-
-        }*/
-
-        // region Migration from versions older than 23/12/2022 (v1.0.0 - v1.0.3)
-        if (!getConfig().contains("config-version")) {
-            getServer().getLogger().log(Level.INFO, "Your config.yml was outdated! Updating...");
-
-            getConfig().set("config-version", 2);
-            getConfig().set("send-auto-announcements", true);
-            saveConfig();
-        }
-        // endregion Migration from versions older than 23/12/2022 (v1.0.0 - v1.0.3)
     }
 }

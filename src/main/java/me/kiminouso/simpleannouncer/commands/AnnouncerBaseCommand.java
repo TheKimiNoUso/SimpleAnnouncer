@@ -8,7 +8,6 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class AnnouncerBaseCommand extends TippieCommand {
     public AnnouncerBaseCommand() {
@@ -23,12 +22,10 @@ public class AnnouncerBaseCommand extends TippieCommand {
 
     @Override
     protected void sendHelpMessage(CommandSender sender, String label, String prefix) {
-        if (!(sender instanceof Player player)) return;
-
-        sender.sendMessage("\n§8[§9SimpleAnnouncer§8]§9 Announcement Commands\n");
+        sender.sendMessage("\n§8[§9SimpleAnnouncer§8]§9 Announcement Commands");
 
         getSubCommands().forEach(cmd -> {
-            if (!player.hasPermission(cmd.getPermission())) return;
+            if (!sender.hasPermission(cmd.getPermission())) return;
 
             TextComponent helpMessage =
                     new TextComponent("§7 - §e/" + label + " " + cmd.getName() + ":§f " + cmd.getDescription());
@@ -36,9 +33,7 @@ public class AnnouncerBaseCommand extends TippieCommand {
                     new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§7Click to open command.")));
             helpMessage.setClickEvent(
                     new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/" + label + " " + cmd.getName() + " "));
-            player.spigot().sendMessage(helpMessage);
+            sender.spigot().sendMessage(helpMessage);
         });
-
-        sender.sendMessage("\n§f");
     }
 }

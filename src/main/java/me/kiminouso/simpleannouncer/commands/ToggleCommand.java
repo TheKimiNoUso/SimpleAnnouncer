@@ -15,24 +15,25 @@ public class ToggleCommand extends TippieCommand {
         super.permission = "announcer.toggle";
     }
 
-    SimpleAnnouncer plugin = SimpleAnnouncer.getPlugin(SimpleAnnouncer.class);
-
     @Override
     public void executes(
-            @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
-            throws NoSuchMethodException {
-        if (plugin.getConfig().getBoolean("send-auto-announcements")) {
-            plugin.getAnnouncementTask().end();
+            @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if (SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getConfig().getBoolean("send-auto-announcements")) {
+            SimpleAnnouncer.getPlugin(SimpleAnnouncer.class)
+                    .getAnnouncementTask()
+                    .end();
             setConfigValue(sender, false);
         } else {
-            plugin.getAnnouncementTask().start();
+            SimpleAnnouncer.getPlugin(SimpleAnnouncer.class)
+                    .getAnnouncementTask()
+                    .start();
             setConfigValue(sender, true);
         }
     }
 
     private void setConfigValue(CommandSender sender, boolean value) {
-        plugin.getConfig().set("send-auto-announcements", value);
-        plugin.saveConfig();
+        SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getConfig().set("send-auto-announcements", value);
+        SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).saveConfig();
 
         sender.sendMessage(
                 value

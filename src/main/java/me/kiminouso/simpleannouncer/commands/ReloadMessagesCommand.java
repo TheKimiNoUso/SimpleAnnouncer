@@ -17,8 +17,7 @@ public class ReloadMessagesCommand extends TippieCommand {
 
     @Override
     public void executes(
-            @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
-            throws NoSuchMethodException {
+            @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).reload();
         sender.sendMessage("§8[§9SimpleAnnouncer§8] §aSuccessfully reloaded your config.yml");
     }

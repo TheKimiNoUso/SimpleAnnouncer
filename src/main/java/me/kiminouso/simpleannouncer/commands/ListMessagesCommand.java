@@ -13,7 +13,6 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class ListMessagesCommand extends TippieCommand {
@@ -26,11 +25,7 @@ public class ListMessagesCommand extends TippieCommand {
 
     @Override
     public void executes(
-            @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
-            throws NoSuchMethodException {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("This command must be sent from a player!");
-        }
+            @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
         List<String> configList =
                 SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getConfig().getStringList("messages");
