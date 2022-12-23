@@ -1,3 +1,4 @@
+/* Authored by TheKimiNoUso 2022 */
 package me.kiminouso.simpleannouncer.commands;
 
 import me.kiminouso.simpleannouncer.SimpleAnnouncer;
@@ -15,14 +16,18 @@ public class RemoveMessageCommand extends TippieCommand {
     }
 
     @Override
-    public void executes(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) throws NoSuchMethodException {
+    public void executes(
+            @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
+            throws NoSuchMethodException {
         if (args.length < 1) {
-            sender.sendMessage("§8[§9SimpleAnnouncer§8] §cUsage: /removemessage <#>. To list all messages, do /listmessages");
+            sender.sendMessage(
+                    "§8[§9SimpleAnnouncer§8] §cUsage: /removemessage <#>. To list all messages, do /listmessages");
             return;
         }
 
         if (SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getMessages().size() == 0) {
-            sender.sendMessage("§8[§9SimpleAnnouncer§8] §cThere are no registered announcements! Add some using /addmessage, or by using config.yml");
+            sender.sendMessage(
+                    "§8[§9SimpleAnnouncer§8] §cThere are no registered announcements! Add some using /addmessage, or by using config.yml");
             return;
         }
 
@@ -31,11 +36,13 @@ public class RemoveMessageCommand extends TippieCommand {
         try {
             index = Integer.parseInt(args[0]);
         } catch (NumberFormatException e) {
-            sender.sendMessage("§8[§9SimpleAnnouncer§8] §cYou didn't enter a valid number! Usage: /removemessage <#>. To list all messages, do /listmessages");
+            sender.sendMessage(
+                    "§8[§9SimpleAnnouncer§8] §cYou didn't enter a valid number! Usage: /removemessage <#>. To list all messages, do /listmessages");
             return;
         }
 
         SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).removeMessage(index);
-        sender.sendMessage("§8[§9SimpleAnnouncer§8] §cSuccessfully removed your message! Please wait a couple of seconds for it to register.");
+        sender.sendMessage(
+                "§8[§9SimpleAnnouncer§8] §cSuccessfully removed your message! Please wait a couple of seconds for it to register.");
     }
 }

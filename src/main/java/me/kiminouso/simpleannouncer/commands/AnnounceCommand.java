@@ -1,5 +1,9 @@
+/* Authored by TheKimiNoUso 2022 */
 package me.kiminouso.simpleannouncer.commands;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.kiminouso.simpleannouncer.SimpleAnnouncer;
 import me.tippie.tippieutils.commands.TippieCommand;
@@ -14,10 +18,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 public class AnnounceCommand extends TippieCommand {
     public AnnounceCommand() {
         super.subLevel = 1;
@@ -27,7 +27,9 @@ public class AnnounceCommand extends TippieCommand {
     }
 
     @Override
-    public void executes(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) throws NoSuchMethodException {
+    public void executes(
+            @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
+            throws NoSuchMethodException {
         if (args.length < 1) {
             sender.sendMessage("§8[§9SimpleAnnouncer§8] §cUsage: /announce <message>.");
             return;
@@ -36,8 +38,7 @@ public class AnnounceCommand extends TippieCommand {
         String message = String.join(" ", Arrays.copyOfRange(args, 0, args.length));
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player.hasPermission("announcer.bypass"))
-                return;
+            if (player.hasPermission("announcer.bypass")) return;
 
             if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
                 message = PlaceholderAPI.setPlaceholders(player, message);
@@ -52,11 +53,16 @@ public class AnnounceCommand extends TippieCommand {
             if (message.contains("{") && message.contains("}")) {
                 String hoverMessage = StringUtils.substringBetween(message, "{", "}");
 
-                finalMessage = new TextComponent(message.replace("{" + StringUtils.substringBetween(message, "{", "}") + "}", ""));
-                finalMessage.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(Stream.of(ColorUtils.translateColorCodes('&',
-                                SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).translateHoverMessage(hoverMessage)))
-                        .map(component -> component.toLegacyText())
-                        .collect(Collectors.joining()))));
+                finalMessage = new TextComponent(
+                        message.replace("{" + StringUtils.substringBetween(message, "{", "}") + "}", ""));
+                finalMessage.setHoverEvent(new HoverEvent(
+                        HoverEvent.Action.SHOW_TEXT,
+                        new Text(Stream.of(ColorUtils.translateColorCodes(
+                                        '&',
+                                        SimpleAnnouncer.getPlugin(SimpleAnnouncer.class)
+                                                .translateHoverMessage(hoverMessage)))
+                                .map(component -> component.toLegacyText())
+                                .collect(Collectors.joining()))));
             }
 
             player.spigot().sendMessage(finalMessage);

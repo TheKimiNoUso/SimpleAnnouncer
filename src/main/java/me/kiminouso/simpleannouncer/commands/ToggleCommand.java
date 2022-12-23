@@ -1,3 +1,4 @@
+/* Authored by TheKimiNoUso 2022 */
 package me.kiminouso.simpleannouncer.commands;
 
 import me.kiminouso.simpleannouncer.SimpleAnnouncer;
@@ -17,7 +18,9 @@ public class ToggleCommand extends TippieCommand {
     SimpleAnnouncer plugin = SimpleAnnouncer.getPlugin(SimpleAnnouncer.class);
 
     @Override
-    public void executes(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) throws NoSuchMethodException {
+    public void executes(
+            @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
+            throws NoSuchMethodException {
         if (plugin.getConfig().getBoolean("send-auto-announcements")) {
             plugin.getAnnouncementTask().end();
             setConfigValue(sender, false);
@@ -31,6 +34,9 @@ public class ToggleCommand extends TippieCommand {
         plugin.getConfig().set("send-auto-announcements", value);
         plugin.saveConfig();
 
-        sender.sendMessage(value ? "§8[§9SimpleAnnouncer§8] §aToggled automatic announcements on." : "§8[§9SimpleAnnouncer§8] §cToggled automatic announcements off.");
+        sender.sendMessage(
+                value
+                        ? "§8[§9SimpleAnnouncer§8] §aToggled automatic announcements on."
+                        : "§8[§9SimpleAnnouncer§8] §cToggled automatic announcements off.");
     }
 }

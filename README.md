@@ -29,4 +29,4 @@ Your messages are shuffled in a queue and will not be sent in order; once the qu
 - **announcer.addmessage** - Gives access to /addmessage
 - **announcer.removemessage** - Gives access to /removemessage
 - **announcer.listmessages** - Gives access to /listmessages
-- **announcer.bypass** - Prevents the permission holder from receiving automated announcements 
+- **announcer.bypass** - Prevents the permission holder from receiving automated announcements

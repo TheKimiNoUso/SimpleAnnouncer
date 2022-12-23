@@ -8,11 +8,11 @@ authors: [ KimiNoUso ]
 description: A simple automatic announcement plugin
 
 commands:
-  simpleannouncer:
+  announcer:
     permission: announcer.use
     description: Base command for SimpleAnnouncer commands
     aliases:
-      - announcer
+      - simpleannouncer
       - announce
       - simpleannounce
 

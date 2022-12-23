@@ -1,5 +1,12 @@
+/* Authored by TheKimiNoUso 2022 */
 package me.kiminouso.simpleannouncer;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.Getter;
 import me.kiminouso.simpleannouncer.commands.*;
 import me.tippie.tippieutils.functions.ColorUtils;
@@ -10,17 +17,10 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 public final class SimpleAnnouncer extends JavaPlugin {
     @Getter
     private final List<TextComponent> messages = new ArrayList<>();
+
     @Getter
     private final AnnouncementTask announcementTask = new AnnouncementTask();
 
@@ -31,11 +31,15 @@ public final class SimpleAnnouncer extends JavaPlugin {
         Metrics metrics = new Metrics(this, 17120);
         getServer().getScheduler().runTaskLater(this, announcementTask::start, 90L);
 
-        Bukkit.getPluginCommand("simpleannouncer").setExecutor(new AnnouncerBaseCommand());
+        Bukkit.getPluginCommand("announcer").setExecutor(new AnnouncerBaseCommand());
 
-        //region Load
+        // region Load
         if (Bukkit.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null)
-            getServer().getLogger().log(Level.INFO, "Found PlaceholderAPI soft dependency! Any placeholders will be set in announcements.");
+            getServer()
+                    .getLogger()
+                    .log(
+                            Level.INFO,
+                            "Found PlaceholderAPI soft dependency! Any placeholders will be set in announcements.");
 
         loadAnnouncements(getConfig().getStringList("messages"));
 
@@ -46,21 +50,23 @@ public final class SimpleAnnouncer extends JavaPlugin {
             announcementTask.setCooldown(getConfig().getInt("timer"));
         } catch (NumberFormatException e) {
             announcementTask.setCooldown(1);
-            getServer().getLogger().log(Level.SEVERE, "Setting timer to 1 minute by default due to an error in your config.yml. Please check your 'timer:' path.");
+            getServer()
+                    .getLogger()
+                    .log(
+                            Level.SEVERE,
+                            "Setting timer to 1 minute by default due to an error in your config.yml. Please check your 'timer:' path.");
             e.printStackTrace();
         }
 
         if (getConfig().getBoolean("send-auto-announcements")) {
-            if (!announcementTask.isActive())
-                announcementTask.start();
+            if (!announcementTask.isActive()) announcementTask.start();
         }
-        //endregion Load
+        // endregion Load
     }
 
     @Override
     public void onDisable() {
-        if (announcementTask.isActive())
-            announcementTask.end();
+        if (announcementTask.isActive()) announcementTask.end();
     }
 
     /**
@@ -84,9 +90,11 @@ public final class SimpleAnnouncer extends JavaPlugin {
                 hoverMessage = StringUtils.substringBetween(string, "{", "}");
 
                 msg.setText(string.replace("{" + StringUtils.substringBetween(string, "{", "}") + "}", ""));
-                msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(Stream.of(ColorUtils.translateColorCodes('&', translateHoverMessage(hoverMessage)))
-                        .map(component -> component.toLegacyText())
-                        .collect(Collectors.joining()))));
+                msg.setHoverEvent(new HoverEvent(
+                        HoverEvent.Action.SHOW_TEXT,
+                        new Text(Stream.of(ColorUtils.translateColorCodes('&', translateHoverMessage(hoverMessage)))
+                                .map(component -> component.toLegacyText())
+                                .collect(Collectors.joining()))));
             }
             messages.add(msg);
         }
@@ -106,8 +114,7 @@ public final class SimpleAnnouncer extends JavaPlugin {
             localMsg = localMsg.replace("{", "");
             builder.append(Stream.of(ColorUtils.translateColorCodes('&', localMsg))
                     .map(component -> component.toLegacyText())
-                    .collect(Collectors.joining())
-            );
+                    .collect(Collectors.joining()));
 
             if (i++ != messages.length - 1) {
                 builder.append("\n");
@@ -118,8 +125,7 @@ public final class SimpleAnnouncer extends JavaPlugin {
     }
 
     public void reload() {
-        if (announcementTask.isActive())
-            announcementTask.end();
+        if (announcementTask.isActive()) announcementTask.end();
 
         reloadConfig();
         loadAnnouncements(getConfig().getStringList("messages"));

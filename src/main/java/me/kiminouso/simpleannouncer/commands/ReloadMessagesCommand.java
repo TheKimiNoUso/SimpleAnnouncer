@@ -1,3 +1,4 @@
+/* Authored by TheKimiNoUso 2022 */
 package me.kiminouso.simpleannouncer.commands;
 
 import me.kiminouso.simpleannouncer.SimpleAnnouncer;
@@ -15,7 +16,9 @@ public class ReloadMessagesCommand extends TippieCommand {
     }
 
     @Override
-    public void executes(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) throws NoSuchMethodException {
+    public void executes(
+            @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
+            throws NoSuchMethodException {
         SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).reload();
         sender.sendMessage("§8[§9SimpleAnnouncer§8] §aSuccessfully reloaded your config.yml");
     }

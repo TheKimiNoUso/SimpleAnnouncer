@@ -1,12 +1,12 @@
+/* Authored by TheKimiNoUso 2022 */
 package me.kiminouso.simpleannouncer.commands;
 
+import java.util.Arrays;
 import me.kiminouso.simpleannouncer.SimpleAnnouncer;
 import me.tippie.tippieutils.commands.TippieCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
 
 public class AddMessageCommand extends TippieCommand {
     public AddMessageCommand() {
@@ -17,13 +17,17 @@ public class AddMessageCommand extends TippieCommand {
     }
 
     @Override
-    public void executes(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) throws NoSuchMethodException {
+    public void executes(
+            @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
+            throws NoSuchMethodException {
         if (args.length < 1) {
             sender.sendMessage("§8[§9SimpleAnnouncer§8] §cUsage: /addmessage <message>.");
             return;
         }
 
-        SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).addMessage(String.join(" ", Arrays.copyOfRange(args, 0, args.length)));
-        sender.sendMessage("§8[§9SimpleAnnouncer§8] §aSuccessfully added your message! Please wait a couple of seconds for it to register.");
+        SimpleAnnouncer.getPlugin(SimpleAnnouncer.class)
+                .addMessage(String.join(" ", Arrays.copyOfRange(args, 0, args.length)));
+        sender.sendMessage(
+                "§8[§9SimpleAnnouncer§8] §aSuccessfully added your message! Please wait a couple of seconds for it to register.");
     }
 }
