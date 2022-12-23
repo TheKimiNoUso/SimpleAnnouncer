@@ -16,17 +16,3 @@ An extremely simple and easy to use Announcement plugin without the bells and wh
 The plugin will send 1 message in chat per cooldown specified by you in your config.yml which can be found in your server files ./plugins/SimpleAnnouncer/config.yml.
 
 Your messages are shuffled in a queue and will not be sent in order; once the queue is empty, it will re-cycle all of your messages back into the queue.
-
-# Commands & Permissions
-## Commands
-- **/reloadannouncer** - Reloads the config.
-- **/addmessage <string>** - Add a new message.
-- **/listmessages** - List all of the registered announcements messages.
-- **/removemessage** <#> - Remove a message. Check the index number using /listmessages.
-
-## Permissions
-- **announcer.reload** - Gives access to /reloadannouncer
-- **announcer.addmessage** - Gives access to /addmessage
-- **announcer.removemessage** - Gives access to /removemessage
-- **announcer.listmessages** - Gives access to /listmessages
-- **announcer.bypass** - Prevents the permission holder from receiving automated announcements
