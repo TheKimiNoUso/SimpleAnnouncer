@@ -31,7 +31,7 @@ public class AnnouncerBaseCommand extends TippieCommand {
             if (!player.hasPermission(cmd.getPermission())) return;
 
             TextComponent helpMessage =
-                    new TextComponent("\n§7 - §e/" + label + " " + cmd.getName() + ":§f " + cmd.getDescription());
+                    new TextComponent("§7 - §e/" + label + " " + cmd.getName() + ":§f " + cmd.getDescription());
             helpMessage.setHoverEvent(
                     new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§7Click to open command.")));
             helpMessage.setClickEvent(
