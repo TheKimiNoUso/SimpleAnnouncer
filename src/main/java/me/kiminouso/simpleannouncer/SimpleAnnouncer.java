@@ -149,4 +149,11 @@ public final class SimpleAnnouncer extends JavaPlugin {
         saveConfig();
         getServer().getScheduler().runTaskLater(this, this::reload, 3 * 20L);
     }
+
+    public void setDelay(int newDelay) {
+        getConfig().set("timer", newDelay);
+        saveConfig();
+        announcementTask.setCooldown(newDelay);
+        getServer().getScheduler().runTaskLater(this, this::reload, 3 * 20L);
+    }
 }

@@ -31,7 +31,7 @@ public class AnnounceCommand extends TippieCommand {
             @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args)
             throws NoSuchMethodException {
         if (args.length < 1) {
-            sender.sendMessage("§8[§9SimpleAnnouncer§8] §cUsage: /announce <message>.");
+            sender.sendMessage("§8[§9SimpleAnnouncer§8] §cUsage: /announcer announce <message>.");
             return;
         }
 

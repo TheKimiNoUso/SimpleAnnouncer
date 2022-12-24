@@ -18,6 +18,7 @@ public class AnnouncerBaseCommand extends TippieCommand {
         super.getSubCommands().add(new ToggleCommand());
         super.getSubCommands().add(new ReloadMessagesCommand());
         super.getSubCommands().add(new AnnounceCommand());
+        super.getSubCommands().add(new SetDelayCommand());
     }
 
     @Override

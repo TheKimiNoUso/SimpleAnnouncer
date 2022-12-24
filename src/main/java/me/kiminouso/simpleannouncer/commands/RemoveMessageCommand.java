@@ -20,13 +20,13 @@ public class RemoveMessageCommand extends TippieCommand {
             @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length < 1) {
             sender.sendMessage(
-                    "§8[§9SimpleAnnouncer§8] §cUsage: /removemessage <#>. To list all messages, do /listmessages");
+                    "§8[§9SimpleAnnouncer§8] §cUsage: /announcer remove <#>. To list all messages, do /announcer list");
             return;
         }
 
         if (SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getMessages().size() == 0) {
             sender.sendMessage(
-                    "§8[§9SimpleAnnouncer§8] §cThere are no registered announcements! Add some using /addmessage, or by using config.yml");
+                    "§8[§9SimpleAnnouncer§8] §cPlease add another announcement first using /announcer add <message>, or by using config.yml");
             return;
         }
 
@@ -36,7 +36,7 @@ public class RemoveMessageCommand extends TippieCommand {
             index = Integer.parseInt(args[0]);
         } catch (NumberFormatException e) {
             sender.sendMessage(
-                    "§8[§9SimpleAnnouncer§8] §cYou didn't enter a valid number! Usage: /removemessage <#>. To list all messages, do /listmessages");
+                    "§8[§9SimpleAnnouncer§8] §cYou didn't enter a valid number! Usage: /announcer remove <#>. To list all messages, do /announcer list");
             return;
         }
 

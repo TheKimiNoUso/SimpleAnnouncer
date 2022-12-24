@@ -36,14 +36,14 @@ public class ListMessagesCommand extends TippieCommand {
                             .map(component -> component.toLegacyText())
                             .collect(Collectors.joining()));
             msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§cClick to remove message.")));
-            msg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/removemessage " + index));
+            msg.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/announcer remove " + index));
             sender.spigot().sendMessage(msg);
             index++;
         }
 
         TextComponent msg = new TextComponent("§a[Click to add a message]");
         msg.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("§7Click to add a message.")));
-        msg.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/addmessage "));
+        msg.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/announcer add "));
         sender.spigot().sendMessage(msg);
     }
 }
