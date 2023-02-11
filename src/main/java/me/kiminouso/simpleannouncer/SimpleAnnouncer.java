@@ -29,6 +29,8 @@ public final class SimpleAnnouncer extends JavaPlugin {
         saveDefaultConfig();
 
         Metrics metrics = new Metrics(this, 17120);
+
+        loadAnnouncements(getConfig().getStringList("messages"));
         getServer().getScheduler().runTaskLater(this, announcementTask::start, 90L);
 
         Bukkit.getPluginCommand("announcer").setExecutor(new AnnouncerBaseCommand());
@@ -40,8 +42,6 @@ public final class SimpleAnnouncer extends JavaPlugin {
                     .log(
                             Level.INFO,
                             "Found PlaceholderAPI soft dependency! Any placeholders will be set in announcements.");
-
-        loadAnnouncements(getConfig().getStringList("messages"));
 
         if (getConfig().getStringList("messages").size() == 0)
             getServer().getLogger().log(Level.SEVERE, "You don't have any messages registered in your config.yml!");

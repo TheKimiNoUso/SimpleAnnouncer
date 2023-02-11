@@ -23,16 +23,21 @@ public class AnnouncementTask {
                 SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getMessages().size();
 
         // Re-cycle messages into the queue if the queue is empty
-        if (size == 0)
+        if (size == 0) {
             SimpleAnnouncer.getPlugin(SimpleAnnouncer.class)
                     .loadAnnouncements(SimpleAnnouncer.getPlugin(SimpleAnnouncer.class)
                             .getConfig()
                             .getStringList("messages"));
 
+            size = SimpleAnnouncer.getPlugin(SimpleAnnouncer.class)
+                    .getMessages()
+                    .size();
+        }
+
         // Choose a random message from the queue
         Random rnd = new Random();
         TextComponent msg =
-                SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getMessages().get(rnd.nextInt(size));
+                SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getMessages().get(rnd.nextInt(0, size));
 
         // Iterate over all players in order to send the announcement to them
         for (Player player : Bukkit.getOnlinePlayers()) {
