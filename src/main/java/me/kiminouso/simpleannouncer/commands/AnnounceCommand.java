@@ -5,12 +5,9 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.kiminouso.simpleannouncer.SimpleAnnouncer;
 import me.tippie.tippieutils.commands.TippieCommand;
 import me.tippie.tippieutils.functions.ColorUtils;
-import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Text;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -55,14 +52,14 @@ public class AnnounceCommand extends TippieCommand {
 
                 finalMessage = new TextComponent(
                         message.replace("{" + StringUtils.substringBetween(message, "{", "}") + "}", ""));
-                finalMessage.setHoverEvent(new HoverEvent(
-                        HoverEvent.Action.SHOW_TEXT,
-                        new Text(Stream.of(ColorUtils.translateColorCodes(
-                                        '&',
-                                        SimpleAnnouncer.getPlugin(SimpleAnnouncer.class)
-                                                .translateHoverMessage(hoverMessage)))
-                                .map(component -> component.toLegacyText())
-                                .collect(Collectors.joining()))));
+                /*finalMessage.setHoverEvent(new HoverEvent(
+                HoverEvent.Action.SHOW_TEXT,
+                new Text(Stream.of(ColorUtils.translateColorCodes(
+                                '&',
+                                SimpleAnnouncer.getPlugin(SimpleAnnouncer.class)
+                                        .translateHoverMessage(hoverMessage)))
+                        .map(component -> component.toLegacyText())
+                        .collect(Collectors.joining()))));*/
             }
 
             player.spigot().sendMessage(finalMessage);

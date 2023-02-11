@@ -19,20 +19,10 @@ public class AnnouncementTask {
     private int cooldown;
 
     private final Runnable task = () -> {
-        int size =
-                SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getMessages().size();
+        // Choose a random message from the queue (Re-cycles old messages if the list is empty)
+        String id = SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getRandomAnnouncementId();
 
-        // Re-cycle messages into the queue if the queue is empty
-        if (size == 0)
-            SimpleAnnouncer.getPlugin(SimpleAnnouncer.class)
-                    .loadAnnouncements(SimpleAnnouncer.getPlugin(SimpleAnnouncer.class)
-                            .getConfig()
-                            .getStringList("messages"));
-
-        // Choose a random message from the queue
-        Random rnd = new Random();
-        TextComponent msg =
-                SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getMessages().get(rnd.nextInt(size));
+        TextComponent msg = SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getAnnouncements().get(id);
 
         // Iterate over all players in order to send the announcement to them
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -53,7 +43,7 @@ public class AnnouncementTask {
         }
 
         // Remove message from the queue
-        SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getMessages().remove(msg);
+        SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getAnnouncements().remove(id);
     };
 
     private BukkitTask activeTask = null;
