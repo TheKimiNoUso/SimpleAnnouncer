@@ -24,7 +24,7 @@ public class RemoveMessageCommand extends TippieCommand {
             return;
         }
 
-        if (SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getMessages().size() == 0) {
+        if (SimpleAnnouncer.getPlugin(SimpleAnnouncer.class).getAnnouncements().size() == 0) {
             sender.sendMessage(
                     "§8[§9SimpleAnnouncer§8] §cPlease add another announcement first using /announcer add <message>, or by using config.yml");
             return;

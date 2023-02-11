@@ -1,12 +1,11 @@
 /* Authored by TheKimiNoUso 2022 */
 package me.kiminouso.simpleannouncer;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import lombok.Getter;
 import me.kiminouso.simpleannouncer.commands.*;
 import me.tippie.tippieutils.functions.ColorUtils;
@@ -15,11 +14,12 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class SimpleAnnouncer extends JavaPlugin {
     @Getter
-    private final List<TextComponent> messages = new ArrayList<>();
+    private final Map<String, TextComponent> announcements = new HashMap<>();
 
     @Getter
     private final AnnouncementTask announcementTask = new AnnouncementTask();
@@ -30,10 +30,20 @@ public final class SimpleAnnouncer extends JavaPlugin {
 
         Metrics metrics = new Metrics(this, 17120);
 
-        loadAnnouncements(getConfig().getStringList("messages"));
         getServer().getScheduler().runTaskLater(this, announcementTask::start, 90L);
 
         Bukkit.getPluginCommand("announcer").setExecutor(new AnnouncerBaseCommand());
+
+        // region Migrate Legacy Configs
+
+        if (getConfig().contains("messages")) {
+            getConfig().set("messages", null);
+            migrateLegacy(Bukkit.getConsoleSender());
+        } else {
+            loadAnnouncements();
+        }
+
+        // endregion Migrate Legacy Configs
 
         // region Load
         if (Bukkit.getServer().getPluginManager().getPlugin("PlaceholderAPI") != null)
@@ -74,61 +84,98 @@ public final class SimpleAnnouncer extends JavaPlugin {
      * config.yml to a TextComponent and store them in a list. This stores raw
      * text without any kind of colouring or placeholder replacements.
      */
-    public void loadAnnouncements(List<String> announcements) {
-        messages.clear();
+    public void loadAnnouncements() {
+        announcements.clear();
 
-        for (String string : announcements) {
+        List<String> announcementIds = new ArrayList<>(getConfig().getConfigurationSection("announcements").getKeys(false));
+        Collections.shuffle(announcementIds);
+
+        for (String id : announcementIds) {
             // Turns announcement into Text Component
-            String hoverMessage;
-            string = Stream.of(ColorUtils.translateColorCodes('&', string))
+            String message = getConfig().getString("announcements." + id + ".message");
+
+            message = Stream.of(ColorUtils.translateColorCodes('&', message))
                     .map(component -> component.toLegacyText())
                     .collect(Collectors.joining());
-            TextComponent msg = new TextComponent(string);
+            TextComponent msg = new TextComponent(message);
+
+            List<String> hoverMessage = getConfig().getStringList("announcements." + id + ".hover");
 
             // Handle hover-able messages
-            if (string.contains("{") && string.contains("}")) {
-                hoverMessage = StringUtils.substringBetween(string, "{", "}");
-
-                msg.setText(string.replace("{" + StringUtils.substringBetween(string, "{", "}") + "}", ""));
+            if (getConfig().contains("announcements." + id + ".hover")) {
                 msg.setHoverEvent(new HoverEvent(
                         HoverEvent.Action.SHOW_TEXT,
-                        new Text(Stream.of(ColorUtils.translateColorCodes('&', translateHoverMessage(hoverMessage)))
+                        new Text(Stream.of(ColorUtils.translateColorCodes('&', String.join("\n", hoverMessage)))
                                 .map(component -> component.toLegacyText())
                                 .collect(Collectors.joining()))));
             }
-            messages.add(msg);
+            announcements.put(id, msg);
         }
-
-        Collections.shuffle(messages);
     }
 
-    public String translateHoverMessage(String string) {
-        StringBuilder builder = new StringBuilder();
-        String[] messages = string.split("\\|");
+    public String getRandomAnnouncementId() {
+        if (announcements.isEmpty())
+            loadAnnouncements();
 
-        int i = 0;
+        Random rnd = new Random();
+        List<String> validIds = announcements.keySet().stream().toList();
 
-        for (String s : messages) {
-            String localMsg = s;
-            localMsg = localMsg.replace("}", "");
-            localMsg = localMsg.replace("{", "");
-            builder.append(Stream.of(ColorUtils.translateColorCodes('&', localMsg))
-                    .map(component -> component.toLegacyText())
-                    .collect(Collectors.joining()));
+        return validIds.get(rnd.nextInt(0, validIds.size()));
+    }
 
-            if (i++ != messages.length - 1) {
-                builder.append("\n");
+    private String generateId() {
+        String[] letters = {
+                "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u",
+                "v", "w", "x", "y", "z"
+        };
+
+        StringBuilder id = new StringBuilder();
+        Random rnd = new Random();
+
+        for (int i = 0; i < 6; i++) {
+            id.append(letters[rnd.nextInt(0, letters.length)]);
+        }
+
+        return id.toString();
+    }
+
+    private void migrateLegacy(CommandSender sender) {
+        List<String> legacy;
+
+        try {
+            legacy = getConfig().getStringList("messages");
+        } catch (Exception ignored) {
+            sender.sendMessage("§cNo messages left to migrate!");
+            return;
+        }
+
+        for (String string : legacy) {
+            String i = generateId();
+            String message = string;
+            String[] hoverMessages = null;
+
+            // Handle hover-able messages
+            if (string.contains("{") && string.contains("}")) {
+                String hoverRaw = StringUtils.substringBetween(string, "{", "}");
+                hoverMessages = hoverRaw.split("\\|");
+
+                message = message.replace("{" + hoverRaw + "}", "");
+            }
+
+            getConfig().set("announcements." + i + ".message", message);
+            if (hoverMessages != null) {
+                getConfig().set("announcements." + i + ".hover", Arrays.stream(hoverMessages).toList());
             }
         }
 
-        return builder.toString();
+        saveConfig();
     }
 
     public void reload() {
         if (announcementTask.isActive()) announcementTask.end();
 
         reloadConfig();
-        loadAnnouncements(getConfig().getStringList("messages"));
+        loadAnnouncements();
 
         if (getConfig().getBoolean("send-auto-announcements"))
             getServer().getScheduler().runTaskLater(this, announcementTask::start, 10L);
